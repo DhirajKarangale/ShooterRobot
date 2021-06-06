@@ -848,3 +848,13 @@ OnLevelWasLoaded was found on LeanTween
 This message has been deprecated and will be removed in a later version of Unity.
 Add a delegate to SceneManager.sceneLoaded instead to get notifications after scene loading has completed
 
+Refreshing native plugins compatible for Editor in 1.71 ms, found 1 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 2767 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 110.7 MB.
+System memory in use after: 110.9 MB.
+
+Unloading 10 unused Assets to reduce memory usage. Loaded Objects now: 3348.
+Total: 5.518900 ms (FindLiveObjects: 0.445000 ms CreateObjectMapping: 0.259000 ms MarkObjects: 4.768300 ms  DeleteObjects: 0.043900 ms)
+
+AssetImportWorkerClient::OnTransportError - code=2 error=End of file
