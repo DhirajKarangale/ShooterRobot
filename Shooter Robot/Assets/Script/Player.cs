@@ -1,5 +1,5 @@
-using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 enum Direction
 {
@@ -10,26 +10,44 @@ enum Direction
 public class Player : MonoBehaviour
 {
     private Animator animator;
-    private Rigidbody rigidbody;
-    private ConstantForce constantForce;
+    private Rigidbody playerRigidbody;
+    private ConstantForce playerConstantForce;
     private AudioSource audioSource;
+    [SerializeField] AudioSource thrustSound;
     private Direction direction = Direction.Right;
 
+    [SerializeField] GameObject explosionEffect;
+    [SerializeField] GameObject UICanvas;
     [SerializeField] GameObject missile;
     [SerializeField] ParticleSystem rightMuzzle, leftMuzzle, rightFire, leftFire, boost;
     [SerializeField] Transform leftArm, rightArm;
     [SerializeField] Transform missilePoint;
     [SerializeField] Light leftLight, rightLight;
     [SerializeField] float speed = 4f;
+    [SerializeField] int health =1000;
+    [SerializeField] Slider healthSlider;
+    [SerializeField] Text messageText;
+    [SerializeField] GameObject messageTextObject;
+    [SerializeField] Text missileCountText;
+    [SerializeField] byte missileCount = 4;
 
     private ParticleSystem.EmissionModule rightMuzzleEmission, leftMuzzleEmission, rightFireEmission, leftFireEmission;
     private ParticleSystem.MainModule boostEmission;
 
+
+    private bool leftMoveButton, rightMoveButton, upRotateButton, downRotateButton, shootButton, thrustButton, missileButton;
+    public static bool isPlayerDead;
+
     private void Awake()
     {
+        missileCountText.text = missileCount.ToString();
+        DesableMsgTxt();
+        healthSlider.value = health;
+        gameObject.SetActive(true);
+        UICanvas.SetActive(true);
         audioSource = GetComponent<AudioSource>();
-        rigidbody = GetComponent<Rigidbody>();
-        constantForce = rigidbody.GetComponent<ConstantForce>();
+        playerRigidbody = GetComponent<Rigidbody>();
+        playerConstantForce = playerRigidbody.GetComponent<ConstantForce>();
         animator = GetComponentInChildren<Animator>();
 
         rightMuzzleEmission = rightMuzzle.emission;
@@ -51,7 +69,7 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         // Move Left Right
-        if (Input.GetKey(KeyCode.LeftArrow))
+        if (Input.GetKey(KeyCode.LeftArrow) || leftMoveButton)
         {
             if (!LeanTween.isTweening(gameObject))
             {
@@ -62,7 +80,7 @@ public class Player : MonoBehaviour
                 else transform.Translate(Vector3.forward * speed * Time.deltaTime);
             }
         }
-        else if (Input.GetKey(KeyCode.RightArrow))
+        else if (Input.GetKey(KeyCode.RightArrow) || rightMoveButton)
         {
             if (!LeanTween.isTweening(gameObject))
             {
@@ -79,22 +97,22 @@ public class Player : MonoBehaviour
         }
 
         // Rotate Arm
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKey(KeyCode.UpArrow) || upRotateButton)
         {
             rightArm.Rotate(Vector3.back * 200 * Time.deltaTime);
             leftArm.Rotate(Vector3.back * 200 * Time.deltaTime);
         }
-        else if (Input.GetKey(KeyCode.DownArrow))
+        else if (Input.GetKey(KeyCode.DownArrow) || downRotateButton)
         {
             rightArm.Rotate(Vector3.forward * 200 * Time.deltaTime);
             leftArm.Rotate(Vector3.forward * 200 * Time.deltaTime);
         }
         
         // Fly
-        if (Input.GetKey(KeyCode.Z))
+        if (Input.GetKey(KeyCode.Z) || thrustButton)
         {
-            constantForce.force = Vector3.zero;
-            if (rigidbody.velocity.y < 4f) rigidbody.AddRelativeForce(Vector3.up * 20);
+            playerConstantForce.force = Vector3.zero;
+            if (playerRigidbody.velocity.y < 4f) playerRigidbody.AddRelativeForce(Vector3.up * 20);
          
             if (!boostEmission.loop)
             {
@@ -104,17 +122,18 @@ public class Player : MonoBehaviour
         }
         else
         {
-            constantForce.force = new Vector3(0, -10, 0);
+            playerConstantForce.force = new Vector3(0, -10, 0);
             boostEmission.loop = false;
         }
 
         // Shoot
-        if (Input.GetKey(KeyCode.X))
+        if (Input.GetKey(KeyCode.X) || shootButton)
         {
             if (!audioSource.isPlaying)
             {
+                leftLight.intensity = rightLight.intensity = 1;
                 audioSource.Play();
-                StartCoroutine("LightControl");
+             //   StartCoroutine("LightControl");
             }
             rightMuzzleEmission.rateOverTime = leftMuzzleEmission.rateOverTime = 10;
             rightFireEmission.rateOverTime = leftFireEmission.rateOverTime = 30;
@@ -125,13 +144,28 @@ public class Player : MonoBehaviour
             rightMuzzleEmission.rateOverTime = leftMuzzleEmission.rateOverTime = 0;
             rightFireEmission.rateOverTime = leftFireEmission.rateOverTime = 0;
             leftLight.intensity = rightLight.intensity = 0;
-            StopCoroutine("LightControl");
+           // StopCoroutine("LightControl");
         }
 
         // Missile
-        if (Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.C) || missileButton)
         {
-            LaunchMissile();
+            missileButton = false;
+            if(missileCount>0)
+            {
+                LaunchMissile();
+                missileCount--;
+                missileCountText.color = Color.white;
+                missileCountText.text = missileCount.ToString();
+            }
+            else
+            {
+                missileCountText.color = Color.red;
+                missileCountText.text = missileCount.ToString();
+                messageTextObject.SetActive(true);
+                messageText.text = "Not Enough Missile, Find missile Box.";
+                Invoke("DesableMsgTxt", 1);
+            }
         }
 
         bool isGrounded()
@@ -151,16 +185,42 @@ public class Player : MonoBehaviour
         }
     }
 
-    IEnumerator LightControl()
+    private void DesableMsgTxt()
     {
-        while (true)
+        messageTextObject.SetActive(false);
+    }
+    
+    private void OnParticleCollision(GameObject other)
+    {
+        if (other.name == "MuzzleEnemy")
         {
-            leftLight.intensity = rightLight.intensity = 1;
-            yield return new WaitForSeconds(0.3f);
-            leftLight.intensity = rightLight.intensity = 0;
-            yield return new WaitForSeconds(0.3f);
+            if (health <= 0) Destroy();
+            else
+            { 
+                health -= 4;
+                healthSlider.value = health;
+            }
         }
     }
+
+    private void Destroy()
+    {
+        isPlayerDead = true;
+        Destroy(Instantiate(explosionEffect, transform.position, Quaternion.identity), 1);
+        gameObject.SetActive(false);
+        UICanvas.SetActive(false);
+    }
+
+    /* IEnumerator LightControl()
+     {
+         while (true)
+         {
+             leftLight.intensity = rightLight.intensity = 1;
+             yield return new WaitForSeconds(0.3f);
+             leftLight.intensity = rightLight.intensity = 0;
+             yield return new WaitForSeconds(0.3f);
+         }
+     }*/
 
     private void LaunchMissile()
     {
@@ -191,4 +251,75 @@ public class Player : MonoBehaviour
          
        
     }
+
+    #region UIButton
+    public void MoveLeftPointerUp()
+    {
+        leftMoveButton = false;
+    }
+
+    public void MoveLeftPointerDown()
+    {
+        leftMoveButton = true;
+    }
+
+    public void MoveRightPointerUp()
+    {
+        rightMoveButton = false;
+    }
+
+    public void MoveRightPointerDown()
+    {
+        rightMoveButton = true;
+    }
+
+    public void ShootPointerUp()
+    {
+        shootButton = false;
+    }
+
+    public void ShootPointerDown()
+    {
+        shootButton = true;
+    }
+
+    public void ThrustPointerUp()
+    {
+        thrustButton = false;
+        thrustSound.Stop();
+    }
+
+    public void ThrustPointerDown()
+    {
+        thrustButton = true;
+        thrustSound.Play();
+    }
+
+    public void UpRotatePointerUp()
+    {
+        upRotateButton = false;
+    }
+
+    public void UpRotatePointerDown()
+    {
+        upRotateButton = true;
+    }
+
+    public void DownRotatePointerUp()
+    {
+        downRotateButton = false;
+    }
+
+    public void DownRotatePointerDown()
+    {
+        downRotateButton = true;
+    }
+
+    public void MissileButton()
+    {
+        missileButton = true;
+    }
+
+    #endregion /UIButton
+
 }

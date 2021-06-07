@@ -26,9 +26,8 @@ public class Missile : MonoBehaviour
     {
         if(other.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
-            if(other.tag == "Box") other.GetComponent<Rigidbody>().AddExplosionForce(2000, transform.position, 6);
-            else if(other.tag == "Enemy") other.SendMessage("Damage");
-           
+            if(other.tag == "Box") other.GetComponent<Rigidbody>().AddExplosionForce(2000, transform.position, 10);
+            else if(other.tag == "Enemy") other.SendMessage("Destroy");
             Explode();
         }
     }

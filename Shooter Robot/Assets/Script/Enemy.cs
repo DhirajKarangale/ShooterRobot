@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -11,6 +9,7 @@ public class Enemy : MonoBehaviour
     private bool canMove = true,canShoot;
     [SerializeField] ParticleSystem rightMuzzle, leftMuzzle, rightFire, leftFire;
     private ParticleSystem.EmissionModule rightMuzzleEmission, leftMuzzleEmission, rightFireEmission, leftFireEmission;
+    [SerializeField] int health = 100;
 
     private void Awake()
     {
@@ -74,7 +73,6 @@ public class Enemy : MonoBehaviour
             if (!audioSource.isPlaying)
             {
                 audioSource.Play();
-               // StartCoroutine("LightControl");
             }
             rightMuzzleEmission.rateOverTime = leftMuzzleEmission.rateOverTime = 10;
             rightFireEmission.rateOverTime = leftFireEmission.rateOverTime = 30;
@@ -85,11 +83,10 @@ public class Enemy : MonoBehaviour
             rightMuzzleEmission.rateOverTime = leftMuzzleEmission.rateOverTime = 0;
             rightFireEmission.rateOverTime = leftFireEmission.rateOverTime = 0;
           //  leftLight.intensity = rightLight.intensity = 0;
-        //    StopCoroutine("LightControl");
         }
     }
 
-    void Damage()
+    void Destroy()
     {
         Destroy(Instantiate(explosion, transform.position, Quaternion.identity),1);
         Destroy(gameObject);
@@ -99,18 +96,35 @@ public class Enemy : MonoBehaviour
     {
         if(other.name == "Muzzle")
         {
-            Damage();
+            if (health <= 0) Destroy();
+            else health -= 4;
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.name == "Robot") canShoot = true;
+        if ((other.gameObject.name == "Robot") && !Player.isPlayerDead)
+        {
+            canShoot = true;
+            canMove = false;
+            animator.Play("Idle");
+        }
+        else
+        {
+            canShoot = false;
+            canMove = true;
+            animator.Play("Walk");
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.name == "Robot") canShoot = false;
+        if (other.gameObject.name == "Robot")
+        {
+            canShoot = false;
+            canMove = true;
+            animator.Play("Walk");
+        }
 
     }
 }
