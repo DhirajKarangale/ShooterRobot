@@ -378,6 +378,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   thrustSound: {fileID: 0}
+  moveJoystick: {fileID: 0}
+  attackJoystick: {fileID: 0}
+  joystick: {fileID: 0}
+  Object: {fileID: 0}
+  FacingRight: 1
+  missileBox: {fileID: 0}
   explosionEffect: {fileID: 7557911936080732874, guid: e431cdd7f19286e40921e40b3b1e0a1d, type: 3}
   UICanvas: {fileID: 0}
   missile: {fileID: 116708, guid: 69b627aa4060f7a42b6e21683a64a0e3, type: 3}

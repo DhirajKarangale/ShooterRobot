@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using EasyJoystick;
 
 enum Direction
 {
@@ -15,6 +16,8 @@ public class Player : MonoBehaviour
     private AudioSource audioSource;
     [SerializeField] AudioSource thrustSound;
     private Direction direction = Direction.Right;
+    [SerializeField] Joystick moveJoystick;
+    [SerializeField] Joystick attackJoystick;
 
     [SerializeField] GameObject missileBox;
     [SerializeField] GameObject explosionEffect;
@@ -36,7 +39,7 @@ public class Player : MonoBehaviour
     private ParticleSystem.MainModule boostEmission;
 
 
-    private bool leftMoveButton, rightMoveButton, upRotateButton, downRotateButton, shootButton, thrustButton, missileButton;
+    private bool upRotateButton, downRotateButton, shootButton, missileButton;
     public static bool isPlayerDead;
 
     private void Awake()
@@ -70,7 +73,7 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         // Move Left Right
-        if (Input.GetKey(KeyCode.LeftArrow) || leftMoveButton)
+        if (Input.GetKey(KeyCode.LeftArrow) || (moveJoystick.Horizontal() < 0))
         {
             if (!LeanTween.isTweening(gameObject))
             {
@@ -81,7 +84,7 @@ public class Player : MonoBehaviour
                 else transform.Translate(Vector3.forward * speed * Time.deltaTime);
             }
         }
-        else if (Input.GetKey(KeyCode.RightArrow) || rightMoveButton)
+        else if (Input.GetKey(KeyCode.RightArrow) || (moveJoystick.Horizontal() > 0))
         {
             if (!LeanTween.isTweening(gameObject))
             {
@@ -98,19 +101,29 @@ public class Player : MonoBehaviour
         }
 
         // Rotate Arm
-        if (Input.GetKey(KeyCode.UpArrow) || upRotateButton)
+        if (Input.GetKey(KeyCode.UpArrow) || (attackJoystick.Vertical()>0))
         {
-            rightArm.Rotate(Vector3.back * 200 * Time.deltaTime);
-            leftArm.Rotate(Vector3.back * 200 * Time.deltaTime);
+            rightArm.localRotation = Quaternion.Euler(0, 90, -90);
+            leftArm.localRotation = Quaternion.Euler(0, 90, 90);
         }
-        else if (Input.GetKey(KeyCode.DownArrow) || downRotateButton)
+        if (Input.GetKey(KeyCode.DownArrow) || (attackJoystick.Vertical() < 0))
         {
-            rightArm.Rotate(Vector3.forward * 200 * Time.deltaTime);
-            leftArm.Rotate(Vector3.forward * 200 * Time.deltaTime);
+            rightArm.localRotation = Quaternion.Euler(0, 90, 90);
+            leftArm.localRotation = Quaternion.Euler(0, 90, 270);
         }
-        
+        if(attackJoystick.Horizontal() > 0)
+        {
+            rightArm.localRotation = Quaternion.Euler(0, 90, 0);
+            leftArm.localRotation = Quaternion.Euler(0, 90, 180);
+        }
+        if(attackJoystick.Horizontal() < 0)
+        {
+            rightArm.localRotation = Quaternion.Euler(0, 90, 180);
+            leftArm.localRotation = Quaternion.Euler(0, 90, 270);
+        }
+
         // Fly
-        if (Input.GetKey(KeyCode.Z) || thrustButton)
+        if (Input.GetKey(KeyCode.Z) || (moveJoystick.Vertical()>0))
         {
             playerConstantForce.force = Vector3.zero;
             if (playerRigidbody.velocity.y < 4f) playerRigidbody.AddRelativeForce(Vector3.up * 20);
@@ -120,6 +133,10 @@ public class Player : MonoBehaviour
                 boost.Play();
                 boostEmission.loop = true;
             }
+        }
+        else if(moveJoystick.Vertical() < 0)
+        {
+            playerRigidbody.AddForce(Vector3.down * 10);
         }
         else
         {
@@ -263,26 +280,7 @@ public class Player : MonoBehaviour
 
 
     #region UIButton
-    public void MoveLeftPointerUp()
-    {
-        leftMoveButton = false;
-    }
-
-    public void MoveLeftPointerDown()
-    {
-        leftMoveButton = true;
-    }
-
-    public void MoveRightPointerUp()
-    {
-        rightMoveButton = false;
-    }
-
-    public void MoveRightPointerDown()
-    {
-        rightMoveButton = true;
-    }
-
+  
     public void ShootPointerUp()
     {
         shootButton = false;
@@ -292,19 +290,7 @@ public class Player : MonoBehaviour
     {
         shootButton = true;
     }
-
-    public void ThrustPointerUp()
-    {
-        thrustButton = false;
-        thrustSound.Stop();
-    }
-
-    public void ThrustPointerDown()
-    {
-        thrustButton = true;
-        thrustSound.Play();
-    }
-
+       
     public void UpRotatePointerUp()
     {
         upRotateButton = false;
