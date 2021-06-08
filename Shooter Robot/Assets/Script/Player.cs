@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
     [SerializeField] AudioSource thrustSound;
     private Direction direction = Direction.Right;
 
+    [SerializeField] GameObject missileBox;
     [SerializeField] GameObject explosionEffect;
     [SerializeField] GameObject UICanvas;
     [SerializeField] GameObject missile;
@@ -201,24 +202,16 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void Destroy()
+    private void OnCollisionEnter(Collision collision)
     {
-        isPlayerDead = true;
-        Destroy(Instantiate(explosionEffect, transform.position, Quaternion.identity), 1);
-        gameObject.SetActive(false);
-        UICanvas.SetActive(false);
+        if(collision.gameObject.tag == "MissileBox")
+        {
+            missileCount += 10;
+            missileCountText.color = Color.green;
+            missileCountText.text = missileCount.ToString();
+            Destroy(missileBox);
+        }
     }
-
-    /* IEnumerator LightControl()
-     {
-         while (true)
-         {
-             leftLight.intensity = rightLight.intensity = 1;
-             yield return new WaitForSeconds(0.3f);
-             leftLight.intensity = rightLight.intensity = 0;
-             yield return new WaitForSeconds(0.3f);
-         }
-     }*/
 
     private void LaunchMissile()
     {
@@ -249,6 +242,25 @@ public class Player : MonoBehaviour
          
        
     }
+    private void Destroy()
+    {
+        isPlayerDead = true;
+        Destroy(Instantiate(explosionEffect, transform.position, Quaternion.identity), 1);
+        gameObject.SetActive(false);
+        UICanvas.SetActive(false);
+    }
+
+    /* IEnumerator LightControl()
+     {
+         while (true)
+         {
+             leftLight.intensity = rightLight.intensity = 1;
+             yield return new WaitForSeconds(0.3f);
+             leftLight.intensity = rightLight.intensity = 0;
+             yield return new WaitForSeconds(0.3f);
+         }
+     }*/
+
 
     #region UIButton
     public void MoveLeftPointerUp()
