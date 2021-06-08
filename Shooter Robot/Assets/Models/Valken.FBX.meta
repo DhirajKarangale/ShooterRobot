@@ -1,95 +1,244 @@
 fileFormatVersion: 2
 guid: 98d8bd1a8f162b34c8dedbaa1ffa76a8
 ModelImporter:
-  serializedVersion: 16
-  fileIDToRecycleName:
-    100000: Box008
-    100002: Box009
-    100004: Box010
-    100006: Box011
-    100008: Box012
-    100010: Box013
-    100012: Box014
-    100014: Box015
-    100016: Cylinder003
-    100018: Cylinder004
-    100020: //RootNode
-    100022: Sphere001
-    100024: Sphere002
-    400000: Box008
-    400002: Box009
-    400004: Box010
-    400006: Box011
-    400008: Box012
-    400010: Box013
-    400012: Box014
-    400014: Box015
-    400016: Cylinder003
-    400018: Cylinder004
-    400020: //RootNode
-    400022: Sphere001
-    400024: Sphere002
-    2300000: Box008
-    2300002: Box009
-    2300004: Box010
-    2300006: Box011
-    2300008: Box012
-    2300010: Box013
-    2300012: Box014
-    2300014: Box015
-    2300016: Cylinder003
-    2300018: Cylinder004
-    2300020: //RootNode
-    2300022: Sphere001
-    2300024: Sphere002
-    3300000: Box008
-    3300002: Box009
-    3300004: Box010
-    3300006: Box011
-    3300008: Box012
-    3300010: Box013
-    3300012: Box014
-    3300014: Box015
-    3300016: Cylinder003
-    3300018: Cylinder004
-    3300020: //RootNode
-    3300022: Sphere001
-    3300024: Sphere002
-    4300000: Box001
-    4300002: Cylinder003
-    4300004: Box008
-    4300006: Box009
-    4300008: Box010
-    4300010: Cylinder004
-    4300012: Box011
-    4300014: Box012
-    4300016: Box013
-    4300018: Sphere001
-    4300020: Box014
-    4300022: Sphere002
-    4300024: Box015
-    7400000: Walk
-    7400002: Idle
-    9500000: //RootNode
+  serializedVersion: 21100
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: Box008
+  - first:
+      1: 100002
+    second: Box009
+  - first:
+      1: 100004
+    second: Box010
+  - first:
+      1: 100006
+    second: Box011
+  - first:
+      1: 100008
+    second: Box012
+  - first:
+      1: 100010
+    second: Box013
+  - first:
+      1: 100012
+    second: Box014
+  - first:
+      1: 100014
+    second: Box015
+  - first:
+      1: 100016
+    second: Cylinder003
+  - first:
+      1: 100018
+    second: Cylinder004
+  - first:
+      1: 100020
+    second: //RootNode
+  - first:
+      1: 100022
+    second: Sphere001
+  - first:
+      1: 100024
+    second: Sphere002
+  - first:
+      4: 400000
+    second: Box008
+  - first:
+      4: 400002
+    second: Box009
+  - first:
+      4: 400004
+    second: Box010
+  - first:
+      4: 400006
+    second: Box011
+  - first:
+      4: 400008
+    second: Box012
+  - first:
+      4: 400010
+    second: Box013
+  - first:
+      4: 400012
+    second: Box014
+  - first:
+      4: 400014
+    second: Box015
+  - first:
+      4: 400016
+    second: Cylinder003
+  - first:
+      4: 400018
+    second: Cylinder004
+  - first:
+      4: 400020
+    second: //RootNode
+  - first:
+      4: 400022
+    second: Sphere001
+  - first:
+      4: 400024
+    second: Sphere002
+  - first:
+      23: 2300000
+    second: Box008
+  - first:
+      23: 2300002
+    second: Box009
+  - first:
+      23: 2300004
+    second: Box010
+  - first:
+      23: 2300006
+    second: Box011
+  - first:
+      23: 2300008
+    second: Box012
+  - first:
+      23: 2300010
+    second: Box013
+  - first:
+      23: 2300012
+    second: Box014
+  - first:
+      23: 2300014
+    second: Box015
+  - first:
+      23: 2300016
+    second: Cylinder003
+  - first:
+      23: 2300018
+    second: Cylinder004
+  - first:
+      23: 2300020
+    second: //RootNode
+  - first:
+      23: 2300022
+    second: Sphere001
+  - first:
+      23: 2300024
+    second: Sphere002
+  - first:
+      33: 3300000
+    second: Box008
+  - first:
+      33: 3300002
+    second: Box009
+  - first:
+      33: 3300004
+    second: Box010
+  - first:
+      33: 3300006
+    second: Box011
+  - first:
+      33: 3300008
+    second: Box012
+  - first:
+      33: 3300010
+    second: Box013
+  - first:
+      33: 3300012
+    second: Box014
+  - first:
+      33: 3300014
+    second: Box015
+  - first:
+      33: 3300016
+    second: Cylinder003
+  - first:
+      33: 3300018
+    second: Cylinder004
+  - first:
+      33: 3300020
+    second: //RootNode
+  - first:
+      33: 3300022
+    second: Sphere001
+  - first:
+      33: 3300024
+    second: Sphere002
+  - first:
+      43: 4300000
+    second: Box001
+  - first:
+      43: 4300002
+    second: Cylinder003
+  - first:
+      43: 4300004
+    second: Box008
+  - first:
+      43: 4300006
+    second: Box009
+  - first:
+      43: 4300008
+    second: Box010
+  - first:
+      43: 4300010
+    second: Cylinder004
+  - first:
+      43: 4300012
+    second: Box011
+  - first:
+      43: 4300014
+    second: Box012
+  - first:
+      43: 4300016
+    second: Box013
+  - first:
+      43: 4300018
+    second: Sphere001
+  - first:
+      43: 4300020
+    second: Box014
+  - first:
+      43: 4300022
+    second: Sphere002
+  - first:
+      43: 4300024
+    second: Box015
+  - first:
+      74: 7400000
+    second: Walk
+  - first:
+      74: 7400002
+    second: Idle
+  - first:
+      95: 9500000
+    second: //RootNode
+  externalObjects: {}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
+    resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
       name: Walk
       takeName: Take 001
+      internalID: 0
       firstFrame: 0
       lastFrame: 20
       wrapMode: 0
@@ -97,6 +246,7 @@ ModelImporter:
       level: 0
       cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
       loopTime: 1
       loopBlend: 1
       loopBlendOrientation: 0
@@ -109,7 +259,21 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.20346189
+        functionName: RightWalkAnimSound
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: d48929e615b950648b8414dc52b46fe0, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.6993382
+        functionName: RightWalkAnimSound
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: d48929e615b950648b8414dc52b46fe0, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1
@@ -139,16 +303,19 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: Idle
       takeName: Take 001
+      internalID: 0
       firstFrame: 3
-      lastFrame: 3.0999999
+      lastFrame: 3.1
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 1
       loopBlendOrientation: 0
@@ -191,41 +358,73 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: .00999999978
+    globalScale: 0.01
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 0
     importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
+    keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
+    useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 1
+    tangentImportMode: 4
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
+    serializedVersion: 3
     human: []
     skeleton: []
-    armTwist: .5
-    foreArmTwist: .5
-    upperLegTwist: .5
-    legTwist: .5
-    armStretch: .0500000007
-    legStretch: .0500000007
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
     feetSpacing: 0
+    globalScale: 0.01
     rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
   additionalBone: 0
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 

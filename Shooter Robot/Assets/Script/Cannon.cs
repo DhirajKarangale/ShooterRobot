@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Cannon : MonoBehaviour
 {
+    [SerializeField] ParticleSystem impactEffect;
     private AudioSource audioSource;
     [SerializeField] Transform player;
     [SerializeField] GameObject explosion;
@@ -29,7 +30,7 @@ public class Cannon : MonoBehaviour
         {
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(player.position - transform.position), 2 * Time.deltaTime);
         }
-        if ((distanseBetwwenEnemyAndPlayer < 12) && !Player.isPlayerDead) canShoot = true;
+        if ((distanseBetwwenEnemyAndPlayer < 10) && !Player.isPlayerDead) canShoot = true;
         else canShoot = false;
         Shoot();
     }
@@ -44,6 +45,7 @@ public class Cannon : MonoBehaviour
     {
         if (other.name == "Muzzle")
         {
+            impactEffect.Play();
             if (health <= 0) Destroy();
             else health -= 4;
         }

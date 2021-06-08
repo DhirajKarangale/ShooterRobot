@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    [SerializeField] ParticleSystem impactEffect;
+    [SerializeField] Transform player;
+    [SerializeField] float force = 100f;
     private Animator animator;
     private AudioSource audioSource;
     [SerializeField] GameObject explosion;
@@ -68,7 +71,7 @@ public class Enemy : MonoBehaviour
 
     private void CheckToShoot()
     {
-        if (canShoot)
+        if (canShoot && !Player.isPlayerDead)
         {
             if (!audioSource.isPlaying)
             {
@@ -96,6 +99,8 @@ public class Enemy : MonoBehaviour
     {
         if(other.name == "Muzzle")
         {
+            impactEffect.Play();
+            gameObject.GetComponent<Rigidbody>().AddForce((player.position - transform.position) * -force, ForceMode.Impulse);
             if (health <= 0) Destroy();
             else health -= 4;
         }

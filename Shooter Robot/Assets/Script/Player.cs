@@ -75,7 +75,7 @@ public class Player : MonoBehaviour
             {
                 if (isGrounded()) animator.Play("Walk");
                 else animator.Play("Idle");
-
+               
                 if (direction != Direction.Left) LeanTween.rotateAroundLocal(gameObject, Vector3.up, 180, 0.3f).setOnComplete(TurnLeft);
                 else transform.Translate(Vector3.forward * speed * Time.deltaTime);
             }
@@ -86,7 +86,7 @@ public class Player : MonoBehaviour
             {
                 if (isGrounded()) animator.Play("Walk");
                 else animator.Play("Idle");
-
+             
                 if (direction != Direction.Right) LeanTween.rotateAroundLocal(gameObject, Vector3.up, -180, 0.3f).setOnComplete(TurnRight);
                 else transform.Translate(Vector3.forward * speed * Time.deltaTime);
             }
@@ -131,9 +131,8 @@ public class Player : MonoBehaviour
         {
             if (!audioSource.isPlaying)
             {
-                leftLight.intensity = rightLight.intensity = 1;
+                leftLight.intensity = rightLight.intensity = 1.5f;
                 audioSource.Play();
-             //   StartCoroutine("LightControl");
             }
             rightMuzzleEmission.rateOverTime = leftMuzzleEmission.rateOverTime = 10;
             rightFireEmission.rateOverTime = leftFireEmission.rateOverTime = 30;
@@ -144,7 +143,6 @@ public class Player : MonoBehaviour
             rightMuzzleEmission.rateOverTime = leftMuzzleEmission.rateOverTime = 0;
             rightFireEmission.rateOverTime = leftFireEmission.rateOverTime = 0;
             leftLight.intensity = rightLight.intensity = 0;
-           // StopCoroutine("LightControl");
         }
 
         // Missile
