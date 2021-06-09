@@ -39,7 +39,7 @@ public class Player : MonoBehaviour
     private ParticleSystem.MainModule boostEmission;
 
 
-    private bool upRotateButton, downRotateButton, shootButton, missileButton;
+    private bool shootButton;
     public static bool isPlayerDead;
 
     private void Awake()
@@ -72,77 +72,8 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Move Left Right
-        if (Input.GetKey(KeyCode.LeftArrow) || (moveJoystick.Horizontal() < 0))
-        {
-            if (!LeanTween.isTweening(gameObject))
-            {
-                if (isGrounded()) animator.Play("Walk");
-                else animator.Play("Idle");
-               
-                if (direction != Direction.Left) LeanTween.rotateAroundLocal(gameObject, Vector3.up, 180, 0.3f).setOnComplete(TurnLeft);
-                else transform.Translate(Vector3.forward * speed * Time.deltaTime);
-            }
-        }
-        else if (Input.GetKey(KeyCode.RightArrow) || (moveJoystick.Horizontal() > 0))
-        {
-            if (!LeanTween.isTweening(gameObject))
-            {
-                if (isGrounded()) animator.Play("Walk");
-                else animator.Play("Idle");
-             
-                if (direction != Direction.Right) LeanTween.rotateAroundLocal(gameObject, Vector3.up, -180, 0.3f).setOnComplete(TurnRight);
-                else transform.Translate(Vector3.forward * speed * Time.deltaTime);
-            }
-        }
-        else
-        {
-            animator.Play("Idle");
-        }
-
-        // Rotate Arm
-        if (Input.GetKey(KeyCode.UpArrow) || (attackJoystick.Vertical()>0))
-        {
-            rightArm.localRotation = Quaternion.Euler(0, 90, -90);
-            leftArm.localRotation = Quaternion.Euler(0, 90, 90);
-        }
-        if (Input.GetKey(KeyCode.DownArrow) || (attackJoystick.Vertical() < 0))
-        {
-            rightArm.localRotation = Quaternion.Euler(0, 90, 90);
-            leftArm.localRotation = Quaternion.Euler(0, 90, 270);
-        }
-        if(attackJoystick.Horizontal() > 0)
-        {
-            rightArm.localRotation = Quaternion.Euler(0, 90, 0);
-            leftArm.localRotation = Quaternion.Euler(0, 90, 180);
-        }
-        if(attackJoystick.Horizontal() < 0)
-        {
-            rightArm.localRotation = Quaternion.Euler(0, 90, 180);
-            leftArm.localRotation = Quaternion.Euler(0, 90, 270);
-        }
-
-        // Fly
-        if (Input.GetKey(KeyCode.Z) || (moveJoystick.Vertical()>0))
-        {
-            playerConstantForce.force = Vector3.zero;
-            if (playerRigidbody.velocity.y < 4f) playerRigidbody.AddRelativeForce(Vector3.up * 20);
-         
-            if (!boostEmission.loop)
-            {
-                boost.Play();
-                boostEmission.loop = true;
-            }
-        }
-        else if(moveJoystick.Vertical() < 0)
-        {
-            playerRigidbody.AddForce(Vector3.down * 10);
-        }
-        else
-        {
-            playerConstantForce.force = new Vector3(0, -10, 0);
-            boostEmission.loop = false;
-        }
+        MoveFly();
+        RotateArm();
 
         // Shoot
         if (Input.GetKey(KeyCode.X) || shootButton)
@@ -162,71 +93,67 @@ public class Player : MonoBehaviour
             rightFireEmission.rateOverTime = leftFireEmission.rateOverTime = 0;
             leftLight.intensity = rightLight.intensity = 0;
         }
-
-        // Missile
-        if (Input.GetKeyDown(KeyCode.C) || missileButton)
+    }
+   
+    private void MoveFly()
+    {
+        // Move Left Right
+        if (Input.GetKey(KeyCode.LeftArrow) || (moveJoystick.Horizontal() < 0))
         {
-            missileButton = false;
-            if(missileCount>0)
+            if (!LeanTween.isTweening(gameObject))
             {
-                LaunchMissile();
-                missileCount--;
-                missileCountText.color = Color.white;
-                missileCountText.text = missileCount.ToString();
+                if (isGrounded()) animator.Play("Walk");
+                else animator.Play("Idle");
+
+                if (direction != Direction.Left) LeanTween.rotateAroundLocal(gameObject, Vector3.up, 180, 0.3f).setOnComplete(TurnLeft);
+                else transform.Translate(Vector3.forward * speed * Time.deltaTime);
             }
-            else
+        }
+        else if (Input.GetKey(KeyCode.RightArrow) || (moveJoystick.Horizontal() > 0))
+        {
+            if (!LeanTween.isTweening(gameObject))
             {
-                missileCountText.color = Color.red;
-                missileCountText.text = missileCount.ToString();
-                messageTextObject.SetActive(true);
-                messageText.text = "Not Enough Missile, Find missile Box.";
-                Invoke("DesableMsgTxt", 1);
+                if (isGrounded()) animator.Play("Walk");
+                else animator.Play("Idle");
+
+                if (direction != Direction.Right) LeanTween.rotateAroundLocal(gameObject, Vector3.up, -180, 0.3f).setOnComplete(TurnRight);
+                else transform.Translate(Vector3.forward * speed * Time.deltaTime);
             }
         }
-
-        bool isGrounded()
+        else
         {
-            return Physics.Raycast(transform.position + transform.forward * 0.4f + transform.up * 0.1f, Vector3.down, 0.1f);
+            animator.Play("Idle");
         }
 
-        void TurnLeft()
+        // Fly
+        if (Input.GetKey(KeyCode.Z) || (moveJoystick.Vertical() > 0))
         {
-            transform.position = new Vector3(transform.position.x, transform.position.y, 0);
-            direction = Direction.Left;
-        }
-        void TurnRight()
-        {
-            transform.position = new Vector3(transform.position.x, transform.position.y, 0);
-            direction = Direction.Right;
-        }
-    }
+            playerConstantForce.force = Vector3.zero;
+            if (playerRigidbody.velocity.y < 4f) playerRigidbody.AddRelativeForce(Vector3.up * 20);
 
-    private void DesableMsgTxt()
-    {
-        messageTextObject.SetActive(false);
-    }
-    
-    private void OnParticleCollision(GameObject other)
-    {
-        if (other.name == "MuzzleEnemy")
-        {
-            if (health <= 0) Destroy();
-            else
-            { 
-                health -= 4;
-                healthSlider.value = health;
+            if (!boostEmission.loop)
+            {
+                boost.Play();
+                boostEmission.loop = true;
             }
         }
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if(collision.gameObject.tag == "MissileBox")
+        else if (moveJoystick.Vertical() < 0)
         {
-            missileCount += 10;
-            missileCountText.color = Color.green;
-            missileCountText.text = missileCount.ToString();
-            Destroy(missileBox);
+            playerRigidbody.AddForce(Vector3.down * 10);
+        }
+        else
+        {
+            playerConstantForce.force = new Vector3(0, -10, 0);
+            boostEmission.loop = false;
+        }
+    }
+    private void RotateArm()
+    {
+        // Rotate Arm
+        Vector3 moveVector = (Vector3.up * attackJoystick.Horizontal() + Vector3.left * attackJoystick.Vertical());
+        if((attackJoystick.Horizontal() != 0) || (attackJoystick.Vertical() != 0))
+        {
+            rightArm.transform.rotation = Quaternion.LookRotation(Vector3.forward, moveVector);
         }
     }
 
@@ -267,6 +194,49 @@ public class Player : MonoBehaviour
         UICanvas.SetActive(false);
     }
 
+    private void TurnLeft()
+    {
+        transform.position = new Vector3(transform.position.x, transform.position.y, 0);
+        direction = Direction.Left;
+    }
+    private void TurnRight()
+    {
+        transform.position = new Vector3(transform.position.x, transform.position.y, 0);
+        direction = Direction.Right;
+    }
+
+    private bool isGrounded()
+    {
+        return Physics.Raycast(transform.position + transform.forward * 0.4f + transform.up * 0.1f, Vector3.down, 0.1f);
+    }
+
+    private void DesableMsgTxt()
+    {
+        messageTextObject.SetActive(false);
+    }
+    private void OnParticleCollision(GameObject other)
+    {
+        if (other.name == "MuzzleEnemy")
+        {
+            if (health <= 0) Destroy();
+            else
+            { 
+                health -= 4;
+                healthSlider.value = health;
+            }
+        }
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag == "MissileBox")
+        {
+            missileCount += 10;
+            missileCountText.color = Color.green;
+            missileCountText.text = missileCount.ToString();
+            Destroy(missileBox);
+        }
+    }
+
     /* IEnumerator LightControl()
      {
          while (true)
@@ -277,7 +247,6 @@ public class Player : MonoBehaviour
              yield return new WaitForSeconds(0.3f);
          }
      }*/
-
 
     #region UIButton
   
@@ -290,32 +259,25 @@ public class Player : MonoBehaviour
     {
         shootButton = true;
     }
-       
-    public void UpRotatePointerUp()
-    {
-        upRotateButton = false;
-    }
-
-    public void UpRotatePointerDown()
-    {
-        upRotateButton = true;
-    }
-
-    public void DownRotatePointerUp()
-    {
-        downRotateButton = false;
-    }
-
-    public void DownRotatePointerDown()
-    {
-        downRotateButton = true;
-    }
-
+   
     public void MissileButton()
     {
-        missileButton = true;
+        if (missileCount > 0)
+        {
+            LaunchMissile();
+            missileCount--;
+            missileCountText.color = Color.white;
+            missileCountText.text = missileCount.ToString();
+        }
+        else
+        {
+            missileCountText.color = Color.red;
+            missileCountText.text = missileCount.ToString();
+            messageTextObject.SetActive(true);
+            messageText.text = "Not Enough Missile, Find missile Box.";
+            Invoke("DesableMsgTxt", 1);
+        }
     }
 
     #endregion /UIButton
-
 }
