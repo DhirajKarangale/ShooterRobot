@@ -38,8 +38,6 @@ public class Player : MonoBehaviour
     private ParticleSystem.EmissionModule rightMuzzleEmission, leftMuzzleEmission, rightFireEmission, leftFireEmission;
     private ParticleSystem.MainModule boostEmission;
 
-
-    private bool shootButton;
     public static bool isPlayerDead;
 
     private void Awake()
@@ -73,26 +71,7 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         MoveFly();
-        RotateArm();
-
-        // Shoot
-        if (Input.GetKey(KeyCode.X) || shootButton)
-        {
-            if (!audioSource.isPlaying)
-            {
-                leftLight.intensity = rightLight.intensity = 1.5f;
-                audioSource.Play();
-            }
-            rightMuzzleEmission.rateOverTime = leftMuzzleEmission.rateOverTime = 10;
-            rightFireEmission.rateOverTime = leftFireEmission.rateOverTime = 30;
-        }
-        else
-        {
-            audioSource.Stop();
-            rightMuzzleEmission.rateOverTime = leftMuzzleEmission.rateOverTime = 0;
-            rightFireEmission.rateOverTime = leftFireEmission.rateOverTime = 0;
-            leftLight.intensity = rightLight.intensity = 0;
-        }
+        RotateArmShoot();
     }
    
     private void MoveFly()
@@ -146,14 +125,52 @@ public class Player : MonoBehaviour
             playerConstantForce.force = new Vector3(0, -10, 0);
             boostEmission.loop = false;
         }
+
     }
-    private void RotateArm()
+    private void RotateArmShoot()
     {
-        // Rotate Arm
         Vector3 moveVector = (Vector3.up * attackJoystick.Horizontal() + Vector3.left * attackJoystick.Vertical());
-        if((attackJoystick.Horizontal() != 0) || (attackJoystick.Vertical() != 0))
+        Vector3 moveVector2 = (Vector3.down * attackJoystick.Horizontal() + Vector3.right * attackJoystick.Vertical());
+        if ((attackJoystick.Horizontal() != 0) || (attackJoystick.Vertical() != 0))
         {
-            rightArm.transform.rotation = Quaternion.LookRotation(Vector3.forward, moveVector);
+           rightArm.transform.rotation = Quaternion.LookRotation(Vector3.back, moveVector);
+           leftArm.transform.rotation = Quaternion.LookRotation(Vector3.back, moveVector2);
+
+            // Shoot
+            if (!audioSource.isPlaying)
+            {
+                leftLight.intensity = rightLight.intensity = 1.5f;
+                audioSource.Play();
+            }
+            rightMuzzleEmission.rateOverTime = leftMuzzleEmission.rateOverTime = 10;
+            rightFireEmission.rateOverTime = leftFireEmission.rateOverTime = 30;
+        }
+        else
+        {
+            // Stop Shoot
+            audioSource.Stop();
+            rightMuzzleEmission.rateOverTime = leftMuzzleEmission.rateOverTime = 0;
+            rightFireEmission.rateOverTime = leftFireEmission.rateOverTime = 0;
+            leftLight.intensity = rightLight.intensity = 0;
+        }
+    }
+
+    public void MissileButton()
+    {
+        if (missileCount > 0)
+        {
+            LaunchMissile();
+            missileCount--;
+            missileCountText.color = Color.white;
+            missileCountText.text = missileCount.ToString();
+        }
+        else
+        {
+            missileCountText.color = Color.red;
+            missileCountText.text = missileCount.ToString();
+            messageTextObject.SetActive(true);
+            messageText.text = "Not Enough Missile, Find missile Box.";
+            Invoke("DesableMsgTxt", 1);
         }
     }
 
@@ -247,37 +264,4 @@ public class Player : MonoBehaviour
              yield return new WaitForSeconds(0.3f);
          }
      }*/
-
-    #region UIButton
-  
-    public void ShootPointerUp()
-    {
-        shootButton = false;
-    }
-
-    public void ShootPointerDown()
-    {
-        shootButton = true;
-    }
-   
-    public void MissileButton()
-    {
-        if (missileCount > 0)
-        {
-            LaunchMissile();
-            missileCount--;
-            missileCountText.color = Color.white;
-            missileCountText.text = missileCount.ToString();
-        }
-        else
-        {
-            missileCountText.color = Color.red;
-            missileCountText.text = missileCount.ToString();
-            messageTextObject.SetActive(true);
-            messageText.text = "Not Enough Missile, Find missile Box.";
-            Invoke("DesableMsgTxt", 1);
-        }
-    }
-
-    #endregion /UIButton
 }
