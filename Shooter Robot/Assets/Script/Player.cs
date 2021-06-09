@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     private Direction direction = Direction.Right;
     [SerializeField] Joystick moveJoystick;
     [SerializeField] Joystick attackJoystick;
+    private float playerPosition;
 
     [SerializeField] GameObject missileBox;
     [SerializeField] GameObject explosionEffect;
@@ -77,7 +78,7 @@ public class Player : MonoBehaviour
     private void MoveFly()
     {
         // Move Left Right
-        if (Input.GetKey(KeyCode.LeftArrow) || (moveJoystick.Horizontal() < 0))
+        if (moveJoystick.Horizontal() < 0)
         {
             if (!LeanTween.isTweening(gameObject))
             {
@@ -105,8 +106,16 @@ public class Player : MonoBehaviour
         }
 
         // Fly
-        if (Input.GetKey(KeyCode.Z) || (moveJoystick.Vertical() > 0))
+        if (moveJoystick.Vertical() > 0)
         {
+            if (playerPosition > transform.position.x)
+            {
+                direction = Direction.Left;
+            }
+            else if (playerPosition < transform.position.x)
+            {
+                direction = Direction.Right;
+            }
             playerConstantForce.force = Vector3.zero;
             if (playerRigidbody.velocity.y < 4f) playerRigidbody.AddRelativeForce(Vector3.up * 20);
 
@@ -115,6 +124,7 @@ public class Player : MonoBehaviour
                 boost.Play();
                 boostEmission.loop = true;
             }
+            playerPosition = transform.position.x;
         }
         else if (moveJoystick.Vertical() < 0)
         {
@@ -129,12 +139,54 @@ public class Player : MonoBehaviour
     }
     private void RotateArmShoot()
     {
-        Vector3 moveVector = (Vector3.up * attackJoystick.Horizontal() + Vector3.left * attackJoystick.Vertical());
-        Vector3 moveVector2 = (Vector3.down * attackJoystick.Horizontal() + Vector3.right * attackJoystick.Vertical());
+        Vector3 moveVector, moveVector2;
+        if (direction == Direction.Right)
+        {
+            moveVector = (Vector3.up * attackJoystick.Horizontal() + Vector3.left * attackJoystick.Vertical());
+            moveVector2 = (Vector3.down * attackJoystick.Horizontal() + Vector3.right * attackJoystick.Vertical());
+        }
+        else
+        {
+            moveVector = (Vector3.down * attackJoystick.Horizontal() + Vector3.right * attackJoystick.Vertical());
+            moveVector2 = (Vector3.up * attackJoystick.Horizontal() + Vector3.left * attackJoystick.Vertical());
+        }
+
         if ((attackJoystick.Horizontal() != 0) || (attackJoystick.Vertical() != 0))
         {
-           rightArm.transform.rotation = Quaternion.LookRotation(Vector3.back, moveVector);
-           leftArm.transform.rotation = Quaternion.LookRotation(Vector3.back, moveVector2);
+            // Rotate Player According to attack direction
+            if ((attackJoystick.Horizontal() != 0))
+            {
+                if (attackJoystick.Horizontal() > 0)
+                {
+                    if (direction == Direction.Left)
+                    {
+                        //LeanTween.rotateAroundLocal(gameObject, Vector3.up, 180, 0.3f);
+                        transform.rotation = Quaternion.Euler(0, 90, 0);
+                        direction = Direction.Right;
+                    }
+                }
+
+                if (attackJoystick.Horizontal() < 0)
+                {
+                    if (direction == Direction.Right)
+                    {
+                        // LeanTween.rotateAroundLocal(gameObject, Vector3.up, -180, 0.3f);
+                        transform.rotation = Quaternion.Euler(0, -90, 0);
+                        direction = Direction.Left;
+                    }
+                }
+            }
+
+            if (direction == Direction.Right)
+            {
+                rightArm.transform.rotation = Quaternion.LookRotation(Vector3.back, moveVector);
+                leftArm.transform.rotation = Quaternion.LookRotation(Vector3.back, moveVector2);
+            }
+            else
+            {
+                rightArm.transform.rotation = Quaternion.LookRotation(Vector3.forward, moveVector);
+                leftArm.transform.rotation = Quaternion.LookRotation(Vector3.forward, moveVector2);
+            }
 
             // Shoot
             if (!audioSource.isPlaying)
@@ -213,13 +265,13 @@ public class Player : MonoBehaviour
 
     private void TurnLeft()
     {
-        transform.position = new Vector3(transform.position.x, transform.position.y, 0);
         direction = Direction.Left;
+        transform.position = new Vector3(transform.position.x, transform.position.y, 0);
     }
     private void TurnRight()
     {
-        transform.position = new Vector3(transform.position.x, transform.position.y, 0);
         direction = Direction.Right;
+        transform.position = new Vector3(transform.position.x, transform.position.y, 0);
     }
 
     private bool isGrounded()
