@@ -186,7 +186,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 9bab376e68e7f1647ad36d2e648d07c9, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.1
+  m_Volume: 0.05
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -282,16 +282,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbf000d7e636f514680bf1a5b1331993, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  impactEffect: {fileID: 1586142816343105374}
-  player: {fileID: 0}
-  force: 0.115
-  explosion: {fileID: 2435110388217624, guid: a8587538c3630734bb04ca9130f27a17, type: 3}
-  speed: 1
   rightMuzzle: {fileID: 4169100179273003094}
   leftMuzzle: {fileID: 2376990051239369056}
   rightFire: {fileID: 4168113128852574222}
   leftFire: {fileID: 2377691228842064184}
-  health: 200
+  impactForce: 0.115
+  impactEffect: {fileID: 1586142816343105374}
+  explosion: {fileID: 2435110388217624, guid: a8587538c3630734bb04ca9130f27a17, type: 3}
+  health: 100
+  player: {fileID: 0}
+  speed: 1
 --- !u!65 &4436647078194187673
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -503,7 +503,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 58d048f6ea17672438bc450e82831b2a, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.05
+  m_Volume: 0.01
   m_Pitch: 1
   Loop: 0
   Mute: 0

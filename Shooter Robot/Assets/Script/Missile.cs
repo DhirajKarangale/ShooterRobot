@@ -6,7 +6,7 @@ public class Missile : MonoBehaviour
 
     void LaunchMissile(Vector3 targetPosition)
     {
-        Invoke("SetActive",0.9f);
+        Invoke("SetActive",1);
 
         LeanTween.move(gameObject, targetPosition, 1.5f).setEase(LeanTweenType.easeInBack).setOnComplete(Explode);
     }
@@ -26,7 +26,7 @@ public class Missile : MonoBehaviour
     {
         if(other.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
-            if(other.tag == "Box") other.GetComponent<Rigidbody>().AddExplosionForce(2000, transform.position, 10);
+            if(other.tag == "Box") other.GetComponent<Rigidbody>().AddExplosionForce(2010, transform.position, 11);
             else if(other.tag == "Enemy") other.SendMessage("Destroy");
             Explode();
         }

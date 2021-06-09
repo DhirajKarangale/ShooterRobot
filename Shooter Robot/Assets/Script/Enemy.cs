@@ -2,17 +2,24 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] ParticleSystem impactEffect;
-    [SerializeField] Transform player;
-    [SerializeField] float force = 100f;
     private Animator animator;
     private AudioSource audioSource;
-    [SerializeField] GameObject explosion;
-    [SerializeField] float speed = 1f;
-    private bool canMove = true,canShoot;
+
+    [Header("Attack")]
+    private bool canShoot;
     [SerializeField] ParticleSystem rightMuzzle, leftMuzzle, rightFire, leftFire;
     private ParticleSystem.EmissionModule rightMuzzleEmission, leftMuzzleEmission, rightFireEmission, leftFireEmission;
+
+    [Header("Dye")]
+    [SerializeField] float impactForce = 0.115f;
+    [SerializeField] ParticleSystem impactEffect;
+    [SerializeField] GameObject explosion;
     [SerializeField] int health = 100;
+    [SerializeField] Transform player;
+
+    [Header("Move")]
+    [SerializeField] float speed = 1f;
+    private bool canMove = true;
 
     private void Awake()
     {
@@ -60,7 +67,7 @@ public class Enemy : MonoBehaviour
 
     bool CheckFront()
     {
-        return Physics.Raycast(transform.position + transform.forward * 0.4f + transform.up * 0.5f, Vector3.forward, 0.1f);
+        return Physics.Raycast(transform.position + transform.forward * 0.4f + transform.up * 0.5f, transform.forward, 0.1f);
     }
 
     private void CompletedMove()
@@ -100,7 +107,7 @@ public class Enemy : MonoBehaviour
         if(other.name == "Muzzle")
         {
             impactEffect.Play();
-            gameObject.GetComponent<Rigidbody>().AddForce((player.position - transform.position) * -force, ForceMode.Impulse);
+            gameObject.GetComponent<Rigidbody>().AddForce((player.position - transform.position) * -impactForce, ForceMode.Impulse);
             if (health <= 0) Destroy();
             else health -= 4;
         }

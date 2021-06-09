@@ -4564,7 +4564,7 @@ private static float easeInOutBounce(float start, float end, float val){
 private static float easeInBack(float start, float end, float val){
 	end -= start;
 	val /= 1;
-	float s= 1.70158f;
+	float s= 1.5f;
 	return end * (val) * val * ((s + 1) * val - s) + start;
 }
 

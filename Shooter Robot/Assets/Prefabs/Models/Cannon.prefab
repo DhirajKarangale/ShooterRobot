@@ -216,7 +216,7 @@ MonoBehaviour:
   explosion: {fileID: 7557911936080732874, guid: b387bf2516c929742930c0a1f2fd76a8, type: 3}
   muzzle: {fileID: 198537278311414952}
   fire: {fileID: 198961932829416688}
-  health: 300
+  health: 150
 --- !u!82 &2015866423
 AudioSource:
   m_ObjectHideFlags: 0
@@ -229,7 +229,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 9bab376e68e7f1647ad36d2e648d07c9, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.1
+  m_Volume: 0.06
   m_Pitch: 1
   Loop: 1
   Mute: 0

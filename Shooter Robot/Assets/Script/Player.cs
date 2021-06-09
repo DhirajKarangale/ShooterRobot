@@ -13,33 +13,48 @@ public class Player : MonoBehaviour
     private Animator animator;
     private Rigidbody playerRigidbody;
     private ConstantForce playerConstantForce;
-    private AudioSource audioSource;
-    [SerializeField] AudioSource thrustSound;
     private Direction direction = Direction.Right;
-    [SerializeField] Joystick moveJoystick;
-    [SerializeField] Joystick attackJoystick;
     private float playerPosition;
 
-    [SerializeField] GameObject missileBox;
-    [SerializeField] GameObject explosionEffect;
-    [SerializeField] GameObject UICanvas;
-    [SerializeField] GameObject missile;
+    [Header("Attack")]
+    [SerializeField] Joystick attackJoystick;
     [SerializeField] ParticleSystem rightMuzzle, leftMuzzle, rightFire, leftFire, boost;
-    [SerializeField] Transform leftArm, rightArm;
-    [SerializeField] Transform missilePoint;
     [SerializeField] Light leftLight, rightLight;
-    [SerializeField] float speed = 4f;
-    [SerializeField] int health =1000;
-    [SerializeField] Slider healthSlider;
-    [SerializeField] Text messageText;
-    [SerializeField] GameObject messageTextObject;
-    [SerializeField] Text missileCountText;
     [SerializeField] byte missileCount = 4;
-
+    [SerializeField] GameObject missile;
+    [SerializeField] Transform missilePoint;
+    [SerializeField] Text missileCountText;
     private ParticleSystem.EmissionModule rightMuzzleEmission, leftMuzzleEmission, rightFireEmission, leftFireEmission;
     private ParticleSystem.MainModule boostEmission;
 
+    [Header("Movement")]
+    [SerializeField] float speed = 4f;
+    [SerializeField] float jumpForce = 15;
+    [SerializeField] Joystick moveJoystick;
+    [SerializeField] Transform leftArm, rightArm;
+
+    [Header("Sound")]
+    private AudioSource bulletSound;
+    [SerializeField] AudioSource thrustSound;
+
+    [Header("Death")]
+    [SerializeField] int health = 1000;
+    [SerializeField] Slider healthSlider;
+    [SerializeField] GameObject explosionEffect;
+    [SerializeField] GameObject UICanvas;
     public static bool isPlayerDead;
+
+    [Header("Items")]
+    [SerializeField] GameObject missileBox;
+    [SerializeField] GameObject missileboxEffect;
+    [SerializeField] GameObject healthPack;
+    [SerializeField] GameObject healthPackEffect;
+
+    [Header("Others")]
+    [SerializeField] Text messageText;
+    [SerializeField] GameObject messageTextObject;
+
+
 
     private void Awake()
     {
@@ -48,7 +63,7 @@ public class Player : MonoBehaviour
         healthSlider.value = health;
         gameObject.SetActive(true);
         UICanvas.SetActive(true);
-        audioSource = GetComponent<AudioSource>();
+        bulletSound = GetComponent<AudioSource>();
         playerRigidbody = GetComponent<Rigidbody>();
         playerConstantForce = playerRigidbody.GetComponent<ConstantForce>();
         animator = GetComponentInChildren<Animator>();
@@ -117,10 +132,11 @@ public class Player : MonoBehaviour
                 direction = Direction.Right;
             }
             playerConstantForce.force = Vector3.zero;
-            if (playerRigidbody.velocity.y < 4f) playerRigidbody.AddRelativeForce(Vector3.up * 20);
+            if (playerRigidbody.velocity.y < 4f) playerRigidbody.AddRelativeForce(Vector3.up * jumpForce);
 
             if (!boostEmission.loop)
             {
+                thrustSound.Play();
                 boost.Play();
                 boostEmission.loop = true;
             }
@@ -128,10 +144,12 @@ public class Player : MonoBehaviour
         }
         else if (moveJoystick.Vertical() < 0)
         {
+            thrustSound.Stop();
             playerRigidbody.AddForce(Vector3.down * 10);
         }
         else
         {
+            thrustSound.Stop();
             playerConstantForce.force = new Vector3(0, -10, 0);
             boostEmission.loop = false;
         }
@@ -189,10 +207,10 @@ public class Player : MonoBehaviour
             }
 
             // Shoot
-            if (!audioSource.isPlaying)
+            if (!bulletSound.isPlaying)
             {
                 leftLight.intensity = rightLight.intensity = 1.5f;
-                audioSource.Play();
+                bulletSound.Play();
             }
             rightMuzzleEmission.rateOverTime = leftMuzzleEmission.rateOverTime = 10;
             rightFireEmission.rateOverTime = leftFireEmission.rateOverTime = 30;
@@ -200,7 +218,7 @@ public class Player : MonoBehaviour
         else
         {
             // Stop Shoot
-            audioSource.Stop();
+            bulletSound.Stop();
             rightMuzzleEmission.rateOverTime = leftMuzzleEmission.rateOverTime = 0;
             rightFireEmission.rateOverTime = leftFireEmission.rateOverTime = 0;
             leftLight.intensity = rightLight.intensity = 0;
@@ -244,11 +262,11 @@ public class Player : MonoBehaviour
                 position.y += 1;
             }
 
-            for(int i = 0; i < 5; i++)
+            for(int i = 0; i < 4; i++)
             {
-                Vector3 origin = position + Vector3.up * Random.Range(-1, 1) + Vector3.left * Random.Range(-1, 1);
-                GameObject currentMissile = Instantiate(missile, origin, Quaternion.AngleAxis(direction == Direction.Right ? 0 : 180, Vector3.up)) as GameObject;
-                Vector3 targetPosition = missilePoint.position + missilePoint.forward * 20 + missilePoint.up * Random.Range(-1, 1);
+                Vector3 origin = position + Vector3.up * Random.Range(-0.6f, 1f) + Vector3.left * Random.Range(-1, 1);
+                GameObject currentMissile = Instantiate(missile, origin, rightArm.transform.rotation);
+                Vector3 targetPosition = missilePoint.position + missilePoint.forward * 20 + missilePoint.up * Random.Range(-2, 2);
                 currentMissile.SendMessage("LaunchMissile", targetPosition);
             }
         }
@@ -283,6 +301,7 @@ public class Player : MonoBehaviour
     {
         messageTextObject.SetActive(false);
     }
+
     private void OnParticleCollision(GameObject other)
     {
         if (other.name == "MuzzleEnemy")
@@ -295,16 +314,29 @@ public class Player : MonoBehaviour
             }
         }
     }
-    private void OnCollisionEnter(Collision collision)
+  
+    private void OnTriggerEnter(Collider other)
     {
-        if(collision.gameObject.tag == "MissileBox")
+        if (other.gameObject.tag == "HealthPack")
         {
+            if (health < 1000)
+            {
+                Destroy(Instantiate(healthPackEffect, transform.position, Quaternion.Euler(-90,0,0)), 1);
+                health = 1000;
+                healthSlider.value = health;
+                Destroy(healthPack);
+            }
+        }
+        if (other.gameObject.tag == "MissileBox")
+        {
+            Destroy(Instantiate(missileboxEffect, transform.position, Quaternion.Euler(-90, 0, 0)), 1);
             missileCount += 10;
             missileCountText.color = Color.green;
             missileCountText.text = missileCount.ToString();
             Destroy(missileBox);
         }
     }
+
 
     /* IEnumerator LightControl()
      {
