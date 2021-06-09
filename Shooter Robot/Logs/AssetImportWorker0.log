@@ -1096,3 +1096,42 @@ Received Import Request.
   path: Assets/Materials/Box.mat
   artifactKey: Guid(5f3a5bf4e30d7354f8855b8e8e1014bc) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
 Start importing Assets/Materials/Box.mat using Guid(5f3a5bf4e30d7354f8855b8e8e1014bc) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5c817960f4f63065dc5bdb9aaadaac3c') in 0.273443 seconds 
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.656173 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 1.28 ms, found 1 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  3.483 seconds
+Platform modules already initialized, skipping
+OnLevelWasLoaded was found on LeanTween
+This message has been deprecated and will be removed in a later version of Unity.
+Add a delegate to SceneManager.sceneLoaded instead to get notifications after scene loading has completed
+
+Switching build target platform(19) subTarget(0) extendedPlatform(0) -> platform(13) subTarget(537395200) extendedPlatform(0)
+Refreshing native plugins compatible for Editor in 1.42 ms, found 1 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 2775 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 124.4 MB.
+System memory in use after: 124.6 MB.
+
+Unloading 10 unused Assets to reduce memory usage. Loaded Objects now: 3671.
+Total: 21.955700 ms (FindLiveObjects: 0.583300 ms CreateObjectMapping: 0.276000 ms MarkObjects: 21.059600 ms  DeleteObjects: 0.034200 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:graphics/normal-map-encoding: 01000000000000000000000000000000 -> 02000000000000000000000000000000
+========================================================================
+Received Prepare
+Refreshing native plugins compatible for Editor in 4.78 ms, found 1 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 8 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 69.8 MB.
+System memory in use after: 70.0 MB.
+
+Unloading 8 unused Assets to reduce memory usage. Loaded Objects now: 3671.
+Total: 6.811500 ms (FindLiveObjects: 1.092800 ms CreateObjectMapping: 0.450400 ms MarkObjects: 5.209300 ms  DeleteObjects: 0.054100 ms)
+
+AssetImportWorkerClient::OnTransportError - code=2 error=End of file
